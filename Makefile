@@ -30,7 +30,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS)
 
 run:
-	./build.exe
+	./build
 
 clean:
 	rm -rf obj
