@@ -6,15 +6,16 @@
 #include <stdlib.h>
 
 #include "fornecidas.h"
+#include "comandos.h"
 
-#define BUF_LEN 1024
+#define MAIN_BUF_LEN 1024
 
 int main()
 {
         // recebe o comando
 
-        char buffer[BUF_LEN];
-        fgets(buffer, BUF_LEN, stdin);
+        char buffer[MAIN_BUF_LEN];
+        fgets(buffer, MAIN_BUF_LEN, stdin);
 
         // leitura do índice da funcionalidade
 
@@ -25,6 +26,7 @@ int main()
 
         switch (indice_func) {
         case 1:
+                comando_create();
                 break;
         case 2:
                 break;

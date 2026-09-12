@@ -10,6 +10,7 @@
 #define LIXO_STR        '$'
 
 // registro de cabeçalho do arquivo conectaPoPs (17 bytes)
+
 typedef struct RegCab {
         char status;
         int32_t topoPilha;
@@ -17,6 +18,8 @@ typedef struct RegCab {
         int32_t nroRegRem;
         int32_t nroPares;
 } RegCab;
+
+#define CAB_OFFSET      17
 
 // índices do status
 
@@ -32,6 +35,8 @@ typedef struct RegDados {
         int32_t velocidade;
         int32_t unidadeMedida;
 } RegDados;
+
+#define REG_TAMANHO     18
 
 // índice de remoção
 
