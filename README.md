@@ -19,6 +19,12 @@ make all
 make run
 ```
 
+## Limpar
+
+```bash
+make clear
+```
+
 ## Address Sanitizer
 
 ```bash
