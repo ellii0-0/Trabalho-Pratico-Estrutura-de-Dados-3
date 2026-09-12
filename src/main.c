@@ -7,8 +7,6 @@
 
 #include "fornecidas.h"
 
-#include "func.h"
-
 #define BUF_LEN 1024
 
 int main()
@@ -21,13 +19,12 @@ int main()
         // leitura do índice da funcionalidade
 
         char *token = strtok(buffer, " ");
-        int func = atoi(token);
+        int indice_func = atoi(token);
 
         // executa a funcionalidade especificada
 
-        switch (func) {
+        switch (indice_func) {
         case 1:
-                func_1();
                 break;
         case 2:
                 break;
