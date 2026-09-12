@@ -14,7 +14,7 @@ int main()
         // recebe o comando
 
         char buffer[BUF_LEN];
-        fgets(buffer, buffer, stdin);
+        fgets(buffer, BUF_LEN, stdin);
 
         // leitura do índice da funcionalidade
 

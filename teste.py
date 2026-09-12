@@ -51,7 +51,8 @@ for i in range(1, 12):
         resultado = subprocess.run(
                 [executavel],
                 input=entrada,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True
         )
 
