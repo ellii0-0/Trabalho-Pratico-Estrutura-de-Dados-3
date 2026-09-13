@@ -35,20 +35,14 @@ char *meu_strdup(char *str)
         return dup;
 }
 
-// lê um valor inteiro passado para o filtro e retorna
-// checa para o valor NULO (-1)
 int32_t ler_valor_inteiro(char *buffer)
 {
-        if (token_nulo(buffer))        // se o valor for marcado como nulo,
-                return NIL_INT;                 // então retorna NIL_INT (-1)
+        if (token_nulo(buffer) || !isdigit(buffer))     // se o valor for marcado como nulo,
+                return NIL_INT;                         // ou não for numérico, retorna nulo
 
         return atoi(buffer);                    // senão, retorna o valor inteiro da string
 }
 
-// copia uma string entre aspas de buffer a dest, assim como ScanQuoteString()
-// sempre retorna o endereço dest passado
-// CUIDADO: ESSA FUNÇÃO NÃO GARANTE QUE O NULO '\0' SEJA COPIADO
-// SE FOR NECESSÁRIO, ELE DEVE SER INSERIDO MANUALMENTE
 char *ler_valor_str(char *buffer, char *dest, size_t dest_length)
 {
         if (buffer == NULL || dest == NULL)

@@ -91,7 +91,10 @@ void operacao_busca(int codigo, FILE *bin, RegCab *cabecalho, RegDados *registro
         case 5:                                 // remoção física
                 registro->removido = REG_REMOVIDO;
                 registro->encadeamentoPilha = cabecalho->topoPilha;
+                
                 cabecalho->topoPilha = RRN;
+                cabecalho->nroRegRem++;
+                // cabecalho->nroPares--;
 
                 // preenche os demais bytes do registro com lixo
 
