@@ -13,6 +13,8 @@
 void loop_busca(int codigo, FILE *bin, RegCab *cabecalho, Filtro *filtro);
 void operacao_busca(int codigo, FILE *bin, RegCab *cabecalho, RegDados *registro, int32_t RRN);
 
+
+
 void comando_busca(int codigo, char *buffer, size_t length)
 {
         char *caminho_bin = strdup(strtok(NULL, " "));
@@ -88,45 +90,8 @@ void operacao_busca(int codigo, FILE *bin, RegCab *cabecalho, RegDados *registro
         case 3:                                 // imprimir
                 printa_registro(registro);
                 break;
-        case 5:                                 // remoção física
-                registro->removido = REG_REMOVIDO;
-                registro->encadeamentoPilha = cabecalho->topoPilha;
-                
-                cabecalho->topoPilha = RRN;
-                cabecalho->nroRegRem++;
-                // cabecalho->nroPares--;
-
-                // preenche os demais bytes do registro com lixo
-
-                memset(
-                        &registro->idPoPs,
-                        LIXO_STR,
-                        sizeof(registro->idPoPs)
-                );
-
-                memset(
-                        &registro->idPoPsConectado,
-                        LIXO_STR,
-                        sizeof(registro->idPoPsConectado)
-                );
-                
-                memset(
-                        &registro->velocidade,
-                        LIXO_STR,
-                        sizeof(registro->velocidade)
-                );
-
-                memset(
-                        &registro->unidadeMedida,
-                        LIXO_STR,
-                        sizeof(registro->unidadeMedida)
-                );
-
-                // escreve o registro em disco
-
-                fseek(bin, -REG_TAMANHO, SEEK_CUR);
-                escrever_registro(bin, registro);
-
+        case 5:                                 // remoção do registro
+                remover_registro(bin, cabecalho, registro, RRN);
                 break;
         }
 }

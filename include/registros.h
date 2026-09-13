@@ -53,6 +53,8 @@ void printa_registro(RegDados *registro);
 void escrever_registro(FILE *bin, RegDados *registro);
 void escrever_cabecalho(FILE *bin, RegCab *cabecalho);
 
+void remover_registro(FILE *bin, RegCab *cabecalho, RegDados *registro, int32_t RRN);
+
 // funções de leitura do arquivo binário
 
 void ler_registro(FILE *bin, RegDados *registro);

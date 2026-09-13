@@ -37,7 +37,7 @@ char *meu_strdup(char *str)
 
 int32_t ler_valor_inteiro(char *buffer)
 {
-        if (token_nulo(buffer) || !isdigit(buffer))     // se o valor for marcado como nulo,
+        if (token_nulo(buffer) || !isdigit(*buffer))     // se o valor for marcado como nulo,
                 return NIL_INT;                         // ou não for numérico, retorna nulo
 
         return atoi(buffer);                    // senão, retorna o valor inteiro da string
