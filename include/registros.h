@@ -10,6 +10,7 @@
 #define LIXO_STR        '$'
 
 // registro de cabeçalho do arquivo conectaPoPs (17 bytes)
+
 typedef struct RegCab {
         char status;
         int32_t topoPilha;
@@ -17,6 +18,8 @@ typedef struct RegCab {
         int32_t nroRegRem;
         int32_t nroPares;
 } RegCab;
+
+#define CAB_TAMANHO     17
 
 // índices do status
 
@@ -27,21 +30,24 @@ typedef struct RegCab {
 typedef struct RegDados {
         char removido;
         int32_t encadeamentoPilha;
+        
         int32_t idPoPs;
         int32_t idPoPsConectado;
         int32_t velocidade;
-        int32_t unidadeMedida;
+        char unidadeMedida;
 } RegDados;
+
+#define REG_TAMANHO     18
 
 // índice de remoção
 
-#define REG_REMOVIDO    '0'
-#define REG_MARCADO     '1'
+#define REG_REMOVIDO    '1'
+#define REG_EM_USO      '0'
 
 // nomes dos campos do registro de dados
-char *tabelaNomeCampo[] = {
-        "idPoPs",
-        "idPoPsConectado",
-        "velocidade",
-        "unidadeMedida"
-};
+extern char *tabelaNomeCampo[];
+
+// funções auxiliares
+
+void escrever_registro(FILE *bin, RegDados *registro);
+void escrever_cabecalho(FILE *bin, RegCab *cabecalho);
