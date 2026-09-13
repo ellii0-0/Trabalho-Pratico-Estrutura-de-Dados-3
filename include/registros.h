@@ -64,5 +64,8 @@ void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN);
 
 // funções de leitura do arquivo binário
 
+// lê do disco um registro campo a campo
 void ler_registro(FILE *bin, RegDados *registro);
+
+// lê do disco o cabeçalho campo a campo
 void ler_cabecalho(FILE *bin, RegCab *cabecalho);
