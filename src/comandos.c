@@ -8,10 +8,8 @@
 
 // funções auxiliares
 
-RegCab cabecalho_vazio();
+void cabecalho_vazio(RegCab *cabecalho);
 int ler_linha_csv(char *buffer, RegDados *registro);
-void escrever_registro(FILE *bin, RegDados *registro);
-void escrever_cabecalho(FILE *bin, RegCab *cabecalho);
 
 #define BUFFER_LEN 1024
 
@@ -33,7 +31,7 @@ void comando_create()
         FILE *bin = fopen(caminho_bin, "wb");
 
         if (bin == NULL) {
-                fclose(bin);
+                fclose(csv);
 
                 printf("Falha no processamento do arquivo.\n");
 
@@ -42,9 +40,11 @@ void comando_create()
 
         // lendo o csv linha a linha
 
-        RegCab cabecalho = cabecalho_vazio();
+        RegCab cabecalho;
+        cabecalho_vazio(&cabecalho);
+        escrever_cabecalho(bin, &cabecalho);
 
-        fseek(bin, SEEK_SET, CAB_OFFSET);       // pula os bytes do cabeçalho
+        fseek(bin, CAB_TAMANHO, SEEK_SET);       // pula os bytes do cabeçalho
 
         char buffer[BUFFER_LEN];
 
@@ -62,7 +62,9 @@ void comando_create()
                 cabecalho.nroPares++;
         }
 
-        // escreve o cabeçalho e escreve na tela
+        // escreve o cabeçalho e chama BinarioNaTela()
+
+        cabecalho.status = CAB_CONSISTENTE;
 
         escrever_cabecalho(bin, &cabecalho);
 
@@ -73,23 +75,21 @@ void comando_create()
 }
 
 // cria um cabeçalho vazio
-RegCab cabecalho_vazio()
+void cabecalho_vazio(RegCab *cabecalho)
 {
-        RegCab cabecalho = {
-                .status = CAB_CONSISTENTE,
+        *cabecalho = (RegCab){
+                .status = CAB_INCONSISTENTE,
                 .topoPilha = NIL_INT,
                 .proxRRN = 0,
                 .nroRegRem = 0,
                 .nroPares = 0
         };
-
-        return cabecalho;
 }
 
 // lê uma linha do arquivo csv padronizado e armazena em um registro
 int ler_linha_csv(char *buffer, RegDados *registro)
 {
-        registro->removido = REG_MARCADO;
+        registro->removido = REG_EM_USO;
         registro->encadeamentoPilha = NIL_INT;          // valor nulo padrão
 
         // lê o idPoPs
@@ -129,55 +129,4 @@ int ler_linha_csv(char *buffer, RegDados *registro)
         registro->unidadeMedida = *token;
 
         return 0;
-}
-
-// escreve o registro campo a campo
-void escrever_registro(FILE *bin, RegDados *registro)
-{
-        fwrite(
-                &registro->removido,
-                sizeof(registro->removido),
-                1,
-                bin
-        );
-        
-        fwrite(
-                &registro->encadeamentoPilha,
-                sizeof(registro->encadeamentoPilha),
-                1,
-                bin
-        );
-
-        fwrite(
-                &registro->idPoPs,
-                sizeof(registro->idPoPs),
-                1,
-                bin
-        );
-
-        fwrite(
-                &registro->idPoPsConectado,
-                sizeof(registro->idPoPsConectado),
-                1,
-                bin
-        );
-
-        fwrite(
-                &registro->unidadeMedida,
-                sizeof(registro->unidadeMedida),
-                1,
-                bin
-        );
-}
-
-// escreve o cabeçalho no início do arquivo, campo a campo
-void escrever_cabecalho(FILE *bin, RegCab *cabecalho)
-{
-        fseek(bin, SEEK_SET, 0);        // retorna ao começo do arquivo
-
-        fwrite(&cabecalho->status,      sizeof(cabecalho->status),      1,      bin);
-        fwrite(&cabecalho->topoPilha,   sizeof(cabecalho->topoPilha),   1,      bin);
-        fwrite(&cabecalho->proxRRN,     sizeof(cabecalho->proxRRN),     1,      bin);
-        fwrite(&cabecalho->nroRegRem,   sizeof(cabecalho->nroRegRem),   1,      bin);
-        fwrite(&cabecalho->nroPares,    sizeof(cabecalho->nroPares),    1,      bin);
 }
