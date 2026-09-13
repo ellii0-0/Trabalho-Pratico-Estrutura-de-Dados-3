@@ -45,15 +45,22 @@ typedef struct RegDados {
 #define REG_REMOVIDO    '1'
 #define REG_EM_USO      '0'
 
+
 // printa registro na tela conforme especificado
 void printa_registro(RegDados *registro);
 
 // funções de escrita do arquivo binário
 
+// escreve o registro campo a campo
 void escrever_registro(FILE *bin, RegDados *registro);
+
+// escreve o cabeçalho no arquivo binário campo a campo
 void escrever_cabecalho(FILE *bin, RegCab *cabecalho);
 
-void remover_registro(FILE *bin, RegCab *cabecalho, RegDados *registro, int32_t RRN);
+// remove um registro no RRN especificado
+// ATENÇÃO: ESSA FUNÇÃO CHAMA FSEEK AO BYTEOFFSET DO RRN
+void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN);
+
 
 // funções de leitura do arquivo binário
 

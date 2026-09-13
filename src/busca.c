@@ -91,7 +91,7 @@ void operacao_busca(int codigo, FILE *bin, RegCab *cabecalho, RegDados *registro
                 printa_registro(registro);
                 break;
         case 5:                                 // remoção do registro
-                remover_registro(bin, cabecalho, registro, RRN);
+                remover_registro(bin, cabecalho, RRN);
                 break;
         }
 }

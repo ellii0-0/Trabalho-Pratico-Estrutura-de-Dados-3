@@ -16,7 +16,6 @@ void printa_registro(RegDados *registro)
         );
 }
 
-// escreve o registro campo a campo
 void escrever_registro(FILE *bin, RegDados *registro)
 {
         if (bin == NULL || registro == NULL)
@@ -65,7 +64,6 @@ void escrever_registro(FILE *bin, RegDados *registro)
         );
 }
 
-// escreve o cabeçalho no arquivo binário campo a campo
 void escrever_cabecalho(FILE *bin, RegCab *cabecalho)
 {
         if (bin == NULL || cabecalho == NULL)
@@ -78,10 +76,12 @@ void escrever_cabecalho(FILE *bin, RegCab *cabecalho)
         fwrite(&cabecalho->nroPares,    sizeof(cabecalho->nroPares),    1,      bin);
 }
 
-void remover_registro(FILE *bin, RegCab *cabecalho, RegDados *registro, int32_t RRN)
+void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN)
 {
-        registro->removido = REG_REMOVIDO;
-        registro->encadeamentoPilha = cabecalho->topoPilha;
+        RegDados registro;
+
+        registro.removido = REG_REMOVIDO;
+        registro.encadeamentoPilha = cabecalho->topoPilha;
                 
         cabecalho->topoPilha = RRN;
         cabecalho->nroRegRem++;
@@ -90,33 +90,33 @@ void remover_registro(FILE *bin, RegCab *cabecalho, RegDados *registro, int32_t 
         // preenche os demais bytes do registro com lixo
 
         memset(
-                &registro->idPoPs,
+                &registro.idPoPs,
                 LIXO_STR,
-                sizeof(registro->idPoPs)
+                sizeof(registro.idPoPs)
         );
 
         memset(
-                &registro->idPoPsConectado,
+                &registro.idPoPsConectado,
                 LIXO_STR,
-                sizeof(registro->idPoPsConectado)
+                sizeof(registro.idPoPsConectado)
         );
                 
         memset(
-                &registro->velocidade,
+                &registro.velocidade,
                 LIXO_STR,
-                sizeof(registro->velocidade)
+                sizeof(registro.velocidade)
         );
 
         memset(
-                &registro->unidadeMedida,
+                &registro.unidadeMedida,
                 LIXO_STR,
-                sizeof(registro->unidadeMedida)
+                sizeof(registro.unidadeMedida)
         );
 
         // escreve o registro em disco
 
         fseek(bin, CAB_TAMANHO + RRN * REG_TAMANHO, SEEK_SET);
-        escrever_registro(bin, registro);
+        escrever_registro(bin, &registro);
 }
 
 // lê do disco um registro campo a campo
