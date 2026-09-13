@@ -1,4 +1,8 @@
+// Thales Mendonça Soares       --      NUSP 14608869
+// Victor Soares Vasconcelos    --      NUSP 16903560
+
 #include <stdio.h>
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 
 int main()
@@ -21,6 +25,22 @@ int main()
 
         char buffer[BUF_LEN];
         fgets_limpo(buffer, BUF_LEN, stdin);
+=======
+#include <string.h>
+#include <stdlib.h>
+
+#include "fornecidas.h"
+#include "comandos.h"
+
+#define MAIN_BUF_LEN 1024
+
+int main()
+{
+        // recebe o comando
+
+        char buffer[MAIN_BUF_LEN];
+        fgets(buffer, MAIN_BUF_LEN, stdin);
+>>>>>>> fd6c626a55b425953831a1291fe3de674d3ff41b
 
         // leitura do índice da funcionalidade
 
@@ -31,12 +51,19 @@ int main()
 
         switch (indice_func) {
         case 1:
+<<<<<<< HEAD
                 comando_create(buffer, BUF_LEN);
+=======
+                comando_create();
+>>>>>>> fd6c626a55b425953831a1291fe3de674d3ff41b
                 break;
         case 2:
                 break;
         case 3:
+<<<<<<< HEAD
                 comando_where(buffer, BUF_LEN);
+=======
+>>>>>>> fd6c626a55b425953831a1291fe3de674d3ff41b
                 break;
         case 4:
                 break;
@@ -52,6 +79,9 @@ int main()
                 return 1;
         }
 
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> fd6c626a55b425953831a1291fe3de674d3ff41b
         return 0;
 }

@@ -7,11 +7,18 @@
 // valores nulos e lixo
 
 #define NIL_INT         -1
+<<<<<<< HEAD
 #define NIL_STR         ""
 
 #define LIXO_STR        '$'
 
 // registro de cabeçalho do arquivo conectaPoPs (17 bytes)
+=======
+#define LIXO_STR        '$'
+
+// registro de cabeçalho do arquivo conectaPoPs (17 bytes)
+
+>>>>>>> fd6c626a55b425953831a1291fe3de674d3ff41b
 typedef struct RegCab {
         char status;
         int32_t topoPilha;
@@ -40,11 +47,16 @@ typedef struct RegDados {
 
 #define REG_TAMANHO     18
 
+<<<<<<< HEAD
 // índices de remoção
+=======
+// índice de remoção
+>>>>>>> fd6c626a55b425953831a1291fe3de674d3ff41b
 
 #define REG_REMOVIDO    '1'
 #define REG_EM_USO      '0'
 
+<<<<<<< HEAD
 // printa registro na tela conforme especificado
 void printa_registro(RegDados *registro);
 
@@ -57,3 +69,12 @@ void escrever_cabecalho(FILE *bin, RegCab *cabecalho);
 
 void ler_registro(FILE *bin, RegDados *registro);
 void ler_cabecalho(FILE *bin, RegCab *cabecalho);
+=======
+// nomes dos campos do registro de dados
+extern char *tabelaNomeCampo[];
+
+// funções auxiliares
+
+void escrever_registro(FILE *bin, RegDados *registro);
+void escrever_cabecalho(FILE *bin, RegCab *cabecalho);
+>>>>>>> fd6c626a55b425953831a1291fe3de674d3ff41b
