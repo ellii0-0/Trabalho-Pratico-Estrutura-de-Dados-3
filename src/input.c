@@ -4,7 +4,7 @@
 
 #include "input.h"
 
-// chama fgets num arquivo de texto e elimina caracteres como \r e \n
+
 char *fgets_limpo(char *buffer, size_t length, FILE *stream)
 {
         char *p = fgets(buffer, length, stream);        // chama fgets normalmente
@@ -20,8 +20,6 @@ char *fgets_limpo(char *buffer, size_t length, FILE *stream)
         return buffer;                                  // retorno padrão do fgets bem-sucedido
 }
 
-// implementação da função não-padronizada "strdup()" que duplica uma string
-// EXIGE QUE SE CHAME free() APÓS USO
 char *meu_strdup(char *str)
 {
         size_t len = strlen(str);
@@ -35,4 +33,80 @@ char *meu_strdup(char *str)
         dup[len] = '\0';
 
         return dup;
+}
+
+// lê um valor inteiro passado para o filtro e retorna
+// checa para o valor NULO (-1)
+int32_t ler_valor_inteiro(char *buffer)
+{
+        if (token_nulo(buffer))        // se o valor for marcado como nulo,
+                return NIL_INT;                 // então retorna NIL_INT (-1)
+
+        return atoi(buffer);                    // senão, retorna o valor inteiro da string
+}
+
+// copia uma string entre aspas de buffer a dest, assim como ScanQuoteString()
+// sempre retorna o endereço dest passado
+// CUIDADO: ESSA FUNÇÃO NÃO GARANTE QUE O NULO '\0' SEJA COPIADO
+// SE FOR NECESSÁRIO, ELE DEVE SER INSERIDO MANUALMENTE
+char *ler_valor_str(char *buffer, char *dest, size_t dest_length)
+{
+        if (buffer == NULL || dest == NULL)
+                return NULL;
+
+        char *p = buffer;
+
+        while (*p != '\0' && isspace(*p))       // percorre o buffer até o primeiro caractere
+                p++;                            // não-espaço ou até o seu fim
+
+        if (token_nulo(p)) {                            // se o valor for marcado como nulo,
+                strncpy(dest, NIL_STR, dest_length);    // escreve a NIL_STR ("") no destino
+
+        } else if (*p == '\"') {                        // string iniciada em aspas
+                p++;
+
+                char *begin = p;        // começo da string a ser copiada
+                size_t n = 0;           // número de caracteres
+
+                while (*p != '\"' && *p != '\0' && n < dest_length) {     // avança até o fim das aspas
+                        p++;                                            // ou o fim do buffer
+                        n++;
+                }
+
+                if (*p != '\"')                                  // aspas "quebradas": copia NULO
+                        strncpy(dest, NIL_STR, dest_length);
+                else                                            // copia a string
+                        strncpy(dest, begin, n);
+                
+        } else if (*p != '\0') {        // sem aspas: apenas copia o conteúdo do buffer
+                char *begin = p;        // começo da string a ser copiada
+                size_t n = 0;           // número de caracteres
+
+                while (*p != '\0' && n < dest_length) { // avança até o fim das aspas
+                        p++;                            // ou o fim do buffer
+                        n++;
+                }
+
+                strncpy(dest, begin, n);        // copia a string
+
+        } else {                                        // string vazia: copia NULO
+                strncpy(dest, NIL_STR, dest_length);
+        }
+        
+        return dest;
+}
+
+bool token_nulo(char *token)
+{
+        if (token == NULL)
+                return true;
+
+        char *nulo = "NULO";
+
+        for (size_t i = 0; i < 5; i++) {
+                if (toupper(token[i]) != nulo[i])
+                        return false;
+        }
+
+        return true;
 }

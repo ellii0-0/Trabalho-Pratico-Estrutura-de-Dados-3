@@ -4,11 +4,7 @@
 #include <stdlib.h>
 
 #include "filtro.h"
-
-// funções auxiliares
-
-static int ler_valor_inteiro(char *buffer);
-static char *ler_valor_str(char *buffer, char *dest, size_t dest_length);
+#include "input.h"
 
 bool comparar_filtro(Filtro *filtro, RegDados *registro)
 {
@@ -74,60 +70,13 @@ void parse_filtro(Filtro *filtro, char *buffer, size_t length)
         }
 }
 
-// lê um valor inteiro passado para o filtro e retorna
-// checa para o valor NULO (-1)
-int ler_valor_inteiro(char *buffer)
+void debug_filtro(Filtro *filtro)
 {
-        if (strcmp(buffer, "NULO") == 0)        // se o valor for marcado como nulo,
-                return NIL_INT;                 // então retorna NIL_INT (-1)
-
-        return atoi(buffer);                    // senão, retorna o valor inteiro da string
-}
-
-// copia uma string entre aspas de buffer a dest, assim como ScanQuoteString()
-// sempre retorna o endereço dest passado
-// CUIDADO: ESSA FUNÇÃO NÃO GARANTE QUE O NULO '\0' SEJA COPIADO
-// SE FOR NECESSÁRIO, ELE DEVE SER INSERIDO MANUALMENTE
-char *ler_valor_str(char *buffer, char *dest, size_t dest_length)
-{
-        char *p = buffer;
-
-        while (*p != '\0' && isspace(*p))       // percorre o buffer até o primeiro caractere
-                p++;                            // não-espaço ou até o seu fim
-
-        if (*p == 'N' || *p == 'n') {                   // se o valor for marcado como nulo,
-                strncpy(dest, NIL_STR, dest_length);    // escreve a NIL_STR ("") no destino
-
-        } else if (*p == '\"') {                        // string iniciada em aspas
-                p++;
-
-                char *begin = p;        // começo da string a ser copiada
-                size_t n = 0;           // número de caracteres
-
-                while (*p != '\"' && *p != '\0' && n < dest_length) {     // avança até o fim das aspas
-                        p++;                                            // ou o fim do buffer
-                        n++;
-                }
-
-                if (*p != '\"')                                  // aspas "quebradas": copia NULO
-                        strncpy(dest, NIL_STR, dest_length);
-                else                                            // copia a string
-                        strncpy(dest, begin, n);
-                
-        } else if (*p != '\0') {        // sem aspas: apenas copia o conteúdo do buffer
-                char *begin = p;        // começo da string a ser copiada
-                size_t n = 0;           // número de caracteres
-
-                while (*p != '\0' && n < dest_length) {  // avança até o fim das aspas
-                        p++;                            // ou o fim do buffer
-                        n++;
-                }
-
-                strncpy(dest, begin, n);        // copia a string
-
-        } else {                                        // string vazia: copia NULO
-                strncpy(dest, NIL_STR, dest_length);
-        }
-        
-        return dest;
+        printf("=== FILTRO ===\n");
+        printf("flags: %d\n", filtro->flags);
+        printf("idPoPs: %" PRId32 "\n", filtro->idPoPs);
+        printf("idPoPsConectado: %" PRId32 "\n", filtro->idPoPsConectado);
+        printf("velocidade: %" PRId32 "\n", filtro->velocidade);
+        printf("unidadeMedida: '%c'\n", filtro->unidadeMedida);
+        printf("=============\n");
 }

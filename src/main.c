@@ -32,15 +32,13 @@ int main()
         case 2:
                 break;
         case 3:
-                comando_where(buffer, BUF_LEN);
+        case 5:
+        case 7:
+                comando_busca(indice_func, buffer, BUF_LEN);
                 break;
         case 4:
                 break;
-        case 5:
-                break;
         case 6:
-                break;
-        case 7:
                 break;
         default:
                 // saída de erro não-especificada

@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,13 +6,18 @@
 #include "comandos.h"
 #include "filtro.h"
 #include "input.h"
+#include "fornecidas.h"
 
-// funcionalidade 3 da especificação
-void comando_where(char *buffer, size_t length)
+// funções auxiliares
+
+void loop_busca(int codigo, FILE *bin, RegCab *cabecalho, Filtro *filtro);
+void operacao_busca(int codigo, FILE *bin, RegCab *cabecalho, RegDados *registro, int32_t RRN);
+
+void comando_busca(int codigo, char *buffer, size_t length)
 {
-        char *caminho_bin = strtok(NULL, " ");
+        char *caminho_bin = strdup(strtok(NULL, " "));
 
-        FILE *bin = fopen(caminho_bin, "rb");
+        FILE *bin = fopen(caminho_bin, "rb+");
 
         if (bin == NULL) {
                 printf("Falha no processamento do arquivo.\n");
@@ -21,10 +27,11 @@ void comando_where(char *buffer, size_t length)
         RegCab cabecalho;                       // lê o cabeçalho do arquivo binário
         ler_cabecalho(bin, &cabecalho);
 
-        int32_t proxRRN = cabecalho.proxRRN;    // número total de registros a serem percorridos
-                                                // durante cada busca
+        cabecalho.status = CAB_INCONSISTENTE;   // marca o cabeçalho enquanto inconsistente
+        fseek(bin, 0, SEEK_SET);
+        escrever_cabecalho(bin, &cabecalho);
 
-        char *n_str = strtok(NULL, " ");
+        char *n_str = strtok(NULL, " ");        // número de iterações
         int n = atoi(n_str);
 
         for (int i = 0; i < n; i++) {
@@ -33,25 +40,90 @@ void comando_where(char *buffer, size_t length)
                 fgets_limpo(buffer, length, stdin);
                 parse_filtro(&filtro, buffer, length);
 
-                // debug_filtro(filtro);
+                // debug_filtro(&filtro);
 
-                for (int32_t j = 0; j < proxRRN; j++) {
-                        RegDados registro;              // lê do disco o registro no RRN j
-                        ler_registro(bin, &registro);
+                loop_busca(codigo, bin, &cabecalho, &filtro);
 
-                        if (registro.removido == REG_REMOVIDO)
-                                // ignora o registro removido
-                                continue;
-                        else if (registro.removido == REG_EM_USO
-                                 && comparar_filtro(&filtro, &registro))
-                                printa_registro(&registro);
-                }
-
-                printf("\n");
+                if (codigo == 3)
+                        // quebra de linha entre prints da func 3
+                        printf("\n");
 
                 if (i + 1 < n)
+                        // fseek apenas quando necessário
                         fseek(bin, CAB_TAMANHO, SEEK_SET);
         }
 
+        cabecalho.status = CAB_CONSISTENTE;
+
+        fseek(bin, 0, SEEK_SET);
+        escrever_cabecalho(bin, &cabecalho);
+
         fclose(bin);
+
+        if (codigo == 5 || codigo == 6 || codigo == 7)
+                BinarioNaTela(caminho_bin);
+
+        free(caminho_bin);
+}
+
+// loop que percorre todo os registros
+void loop_busca(int codigo, FILE *bin, RegCab *cabecalho, Filtro *filtro)
+{
+        for (int32_t RRN = 0; RRN < cabecalho->proxRRN; RRN++) {
+                RegDados registro;              // lê do disco o registro no RRN
+                ler_registro(bin, &registro);
+
+                if (registro.removido == REG_REMOVIDO)
+                        // ignora o registro removido
+                        continue;
+                else if (comparar_filtro(filtro, &registro))
+                        operacao_busca(codigo, bin, cabecalho, &registro, RRN);
+        }
+}
+
+// realiza uma operação definida pelo código no registro que satisfaz o filtro
+void operacao_busca(int codigo, FILE *bin, RegCab *cabecalho, RegDados *registro, int32_t RRN)
+{
+        switch (codigo) {
+        case 3:                                 // imprimir
+                printa_registro(registro);
+                break;
+        case 5:                                 // remoção física
+                registro->removido = REG_REMOVIDO;
+                registro->encadeamentoPilha = cabecalho->topoPilha;
+                cabecalho->topoPilha = RRN;
+
+                // preenche os demais bytes do registro com lixo
+
+                memset(
+                        &registro->idPoPs,
+                        LIXO_STR,
+                        sizeof(registro->idPoPs)
+                );
+
+                memset(
+                        &registro->idPoPsConectado,
+                        LIXO_STR,
+                        sizeof(registro->idPoPsConectado)
+                );
+                
+                memset(
+                        &registro->velocidade,
+                        LIXO_STR,
+                        sizeof(registro->velocidade)
+                );
+
+                memset(
+                        &registro->unidadeMedida,
+                        LIXO_STR,
+                        sizeof(registro->unidadeMedida)
+                );
+
+                // escreve o registro em disco
+
+                fseek(bin, -REG_TAMANHO, SEEK_CUR);
+                escrever_registro(bin, registro);
+
+                break;
+        }
 }

@@ -12,7 +12,6 @@
 void cabecalho_vazio(RegCab *cabecalho);
 int ler_linha_csv(char *buffer, RegDados *registro);
 
-// funcionalidade 1 da especificação
 void comando_create(char *buffer, size_t length)
 {
         char *caminho_csv = strtok(NULL, " ");
@@ -40,7 +39,7 @@ void comando_create(char *buffer, size_t length)
         cabecalho_vazio(&cabecalho);
         escrever_cabecalho(bin, &cabecalho);    // escreve o cabeçalho (inconsistente)
 
-        fgets(buffer, length, csv);         // pula o cabeçalho do csv
+        fgets(buffer, length, csv);             // pula o cabeçalho do csv
 
         while (fgets_limpo(buffer, length, csv) != NULL) {
                 // lê uma linha do csv e a escreve no arquivo binário
@@ -87,41 +86,21 @@ int ler_linha_csv(char *buffer, RegDados *registro)
         registro->removido = REG_EM_USO;
         registro->encadeamentoPilha = NIL_INT;          // valor nulo padrão
 
-        // lê o idPoPs
+        char *next = buffer;
+        char *token = strsep(&next, ",");
 
-        char *token = strtok(buffer, ",");
+        // AVISO: a função strsep não existe no windows
 
-        if (token == NULL)
-                return 1;
+        registro->idPoPs = ler_valor_inteiro(token);
+        token = strsep(&next, ",");
 
-        registro->idPoPs = atoi(token);
+        registro->idPoPsConectado = ler_valor_inteiro(token);
+        token = strsep(&next, ",");
 
-        // idPoPsConectado
+        registro->velocidade = ler_valor_inteiro(token);
+        token = strsep(&next, ",");
 
-        token = strtok(NULL, ",");
-
-        if (token == NULL)
-                return 1;
-
-        registro->idPoPsConectado = atoi(token);
-
-        // velocidade
-
-        token = strtok(NULL, ",");
-
-        if (token == NULL)
-                return 1;
-
-        registro->velocidade = atoi(token);
-
-        // unidadeMedida
-
-        token = strtok(NULL, ",");
-
-        if (token == NULL)
-                return 1;
-
-        registro->unidadeMedida = *token;
+        ler_valor_str(token, &registro->unidadeMedida, sizeof(registro->unidadeMedida));
 
         return 0;
 }
