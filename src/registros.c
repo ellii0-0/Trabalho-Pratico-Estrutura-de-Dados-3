@@ -119,7 +119,6 @@ void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN)
         escrever_registro(bin, &registro);
 }
 
-// lê do disco um registro campo a campo
 void ler_registro(FILE *bin, RegDados *registro)
 {
         if (bin == NULL || registro == NULL)
@@ -168,7 +167,6 @@ void ler_registro(FILE *bin, RegDados *registro)
         );
 }
 
-// lê do disco o cabeçalho campo a campo
 void ler_cabecalho(FILE *bin, RegCab *cabecalho)
 {
         if (bin == NULL || cabecalho == NULL)
