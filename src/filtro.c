@@ -72,8 +72,6 @@ void parse_filtro(Filtro *filtro, char *buffer, size_t length)
                         ler_valor_str(valorCampo, &filtro->unidadeMedida, 1);
                 }
         }
-
-        // debug_filtro(filtro);
 }
 
 // lê um valor inteiro passado para o filtro e retorna
@@ -132,13 +130,4 @@ char *ler_valor_str(char *buffer, char *dest, size_t dest_length)
         }
         
         return dest;
-}
-
-void debug_filtro(Filtro *filtro) {
-        printf("Filtro:\n");
-        printf("  flags: %d\n", filtro->flags);
-        printf("  idPoPs: %d\n", filtro->idPoPs);
-        printf("  idPoPsConectado: %d\n", filtro->idPoPsConectado);
-        printf("  velocidade: %d\n", filtro->velocidade);
-        printf("  unidadeMedida: %c\n", filtro->unidadeMedida);
 }

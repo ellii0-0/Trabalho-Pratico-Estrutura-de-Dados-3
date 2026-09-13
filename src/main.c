@@ -11,7 +11,6 @@
 
 #define BUF_LEN 65535
 
-
 int main()
 {
         // recebe o comando

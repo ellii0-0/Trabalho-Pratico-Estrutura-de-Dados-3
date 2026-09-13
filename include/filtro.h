@@ -30,5 +30,3 @@ bool comparar_filtro(Filtro *filtro, RegDados *registro);
 // lê os caracteres de entrada no formato especificado:
 // m nomeCampo_1 valorCampo_1 nomeCampo_2 valorCampo_2 ... nomeCampo_m valorCampo_m
 void parse_filtro(Filtro *filtro, char *buffer, size_t length);
-
-void debug_filtro(Filtro *filtro);
