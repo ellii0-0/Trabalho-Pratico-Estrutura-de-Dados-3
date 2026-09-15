@@ -9,8 +9,9 @@
 
 // funções auxiliares
 
-void cabecalho_vazio(RegCab *cabecalho);
+// lê uma linha do arquivo csv padronizado e armazena em um registro
 int ler_linha_csv(char *buffer, RegDados *registro);
+
 
 void comando_create(char *buffer, size_t length)
 {
@@ -25,19 +26,15 @@ void comando_create(char *buffer, size_t length)
 
         char *caminho_bin = meu_strdup(strtok(NULL, " "));
 
-        FILE *bin = fopen(caminho_bin, "wb");
+        RegCab cabecalho;
+        FILE *bin = abrir_binario_novo(caminho_bin, &cabecalho);
 
         if (bin == NULL) {
+                free(caminho_bin);
                 fclose(csv);
                 printf("Falha no processamento do arquivo.\n");
                 return;
         }
-
-        // lendo o csv linha a linha
-
-        RegCab cabecalho;
-        cabecalho_vazio(&cabecalho);
-        escrever_cabecalho(bin, &cabecalho);    // escreve o cabeçalho (inconsistente)
 
         fgets(buffer, length, csv);             // pula o cabeçalho do csv
 
@@ -68,19 +65,6 @@ void comando_create(char *buffer, size_t length)
         free(caminho_bin);
 }
 
-// cria um cabeçalho vazio
-void cabecalho_vazio(RegCab *cabecalho)
-{
-        *cabecalho = (RegCab){
-                .status = CAB_INCONSISTENTE,
-                .topoPilha = NIL_INT,
-                .proxRRN = 0,
-                .nroRegRem = 0,
-                .nroPares = 0
-        };
-}
-
-// lê uma linha do arquivo csv padronizado e armazena em um registro
 int ler_linha_csv(char *buffer, RegDados *registro)
 {
         registro->removido = REG_EM_USO;

@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include <string.h>
+
 #include "registros.h"
 
 void printa_registro(RegDados *registro)
@@ -223,4 +225,57 @@ bool filtrar_registro(Filtro *filtro, RegDados *registro)
                 return false;
 
         return true;
+}
+
+FILE *abrir_binario_novo(char *caminho, RegCab *cabecalho)
+{
+        FILE *bin = fopen(caminho, "wb");
+
+        *cabecalho = (RegCab){
+                .status         = CAB_INCONSISTENTE,
+
+                .topoPilha      = NIL_INT,
+                .proxRRN        = 0,
+                .nroRegRem      = 0,
+                .nroPares       = 0
+        };
+
+        escrever_cabecalho(bin, cabecalho);
+
+        return bin;
+}
+
+FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar)
+{
+        FILE *bin;
+        
+        if (marcar)
+                bin = fopen(caminho, "rb+");
+        else
+                bin = fopen(caminho, "rb");
+
+        if (bin == NULL)
+                return NULL;
+
+        ler_cabecalho(bin, cabecalho);
+
+        if (marcar) {
+                cabecalho->status = CAB_INCONSISTENTE;   // marca o cabeçalho enquanto inconsistente
+                fseek(bin, 0, SEEK_SET);
+                escrever_cabecalho(bin, cabecalho);
+        }
+
+        return bin;
+}
+
+int fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar)
+{
+        if (marcar) {
+                cabecalho->status = CAB_CONSISTENTE;
+
+                fseek(bin, 0, SEEK_SET);
+                escrever_cabecalho(bin, cabecalho);
+        }
+
+        fclose(bin);
 }

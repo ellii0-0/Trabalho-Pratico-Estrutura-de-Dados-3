@@ -10,33 +10,27 @@
 
 // funções auxiliares
 
+// loop da funcionalidade 3
 static void loop_printar(FILE *bin, RegCab *cabecalho, Filtro *filtro);
+
+// loop da funcionalidade 5
 static void loop_remover(FILE *bin, RegCab *cabecalho, Filtro *filtro);
+
+// loop da funcionalidade 7
 static void loop_atualizar(FILE *bin, RegCab *cabecalho, Filtro *filtro, Filtro *mudancas);
 
 void comando_busca(int codigo, char *buffer, size_t length)
 {
         char *caminho_bin = strdup(strtok(NULL, " "));
+        RegCab cabecalho;                       // lê o cabeçalho do arquivo binário
 
-        FILE *bin;
-        
-        if (codigo == 3)
-                bin = fopen(caminho_bin, "rb");
-        else
-                bin = fopen(caminho_bin, "rb+");
+        FILE *bin = abrir_binario(caminho_bin, &cabecalho, codigo != 3);
 
         if (bin == NULL) {
                 printf("Falha no processamento do arquivo.\n");
+
+                free(caminho_bin);
                 return;
-        }
-
-        RegCab cabecalho;                       // lê o cabeçalho do arquivo binário
-        ler_cabecalho(bin, &cabecalho);
-
-        if (codigo != 3) {
-                cabecalho.status = CAB_INCONSISTENTE;   // marca o cabeçalho enquanto inconsistente
-                fseek(bin, 0, SEEK_SET);
-                escrever_cabecalho(bin, &cabecalho);
         }
 
         char *n_str = strtok(NULL, " ");        // número de iterações
@@ -79,14 +73,7 @@ void comando_busca(int codigo, char *buffer, size_t length)
 
         // escreve o cabeçalho na memória e fecha o arquivo
 
-        if (codigo != 3) {
-                cabecalho.status = CAB_CONSISTENTE;
-
-                fseek(bin, 0, SEEK_SET);
-                escrever_cabecalho(bin, &cabecalho);
-        }
-
-        fclose(bin);
+        fechar_binario(bin, &cabecalho, codigo != 3);
 
         if (codigo != 3)
                 BinarioNaTela(caminho_bin);
@@ -134,6 +121,6 @@ void loop_atualizar(FILE *bin, RegCab *cabecalho, Filtro *filtro, Filtro *mudanc
                         // ignora o registro removido
                         continue;
                 else if (filtrar_registro(filtro, &registro))
-                        atualizar_registro(&registro, mudancas);
+                        atualizar_registro(mudancas, &registro);
         }
 }

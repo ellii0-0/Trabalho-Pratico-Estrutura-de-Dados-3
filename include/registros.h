@@ -64,6 +64,18 @@ void escrever_cabecalho(FILE *bin, RegCab *cabecalho);
 void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN);
 
 
+// arquivo binário
+
+// abrir arquivo binário vazio (rb+)
+FILE *abrir_binario_novo(char *caminho, RegCab *cabecalho);
+
+// abrir arquivo binário (marcando ou não o cabeçalho)
+FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar);
+
+// fechar arquivo binário (escrevendo o cabeçalho)
+int fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar);
+
+
 // funções de leitura do arquivo binário
 
 // lê do disco um registro campo a campo
