@@ -6,33 +6,6 @@
 #include "filtro.h"
 #include "input.h"
 
-bool comparar_filtro(Filtro *filtro, RegDados *registro)
-{
-        // se é encontrada uma flag ativa cujo valor correspondente
-        // é diferente do contido no registro, então retorna falso
-        // do contrário, retorna verdadeiro
-
-        FlagsBusca flags = filtro->flags;
-
-        if (flags & FLAG_IDPOPS
-            && filtro->idPoPs != registro->idPoPs)
-                return false;
-
-        if (flags & FLAG_IDPOPSCONECTADO
-            && filtro->idPoPsConectado != registro->idPoPsConectado)
-                return false;
-
-        if (flags & FLAG_VELOCIDADE
-            && filtro->velocidade != registro->velocidade)
-                return false;
-
-        if (flags & FLAG_UNIDADEMEDIDA
-            && filtro->unidadeMedida != registro->unidadeMedida)
-                return false;
-
-        return true;
-}
-
 void parse_filtro(Filtro *filtro, char *buffer, size_t length)
 {
         *filtro = (Filtro){

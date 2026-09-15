@@ -4,6 +4,8 @@
 
 #include <inttypes.h>
 
+#include "filtro.h"
+
 // valores nulos e lixo
 
 #define NIL_INT         -1
@@ -69,3 +71,11 @@ void ler_registro(FILE *bin, RegDados *registro);
 
 // lê do disco o cabeçalho campo a campo
 void ler_cabecalho(FILE *bin, RegCab *cabecalho);
+
+// funções de filtro
+
+// atualiza um registro conforme um filtro
+void atualizar_registro(Filtro *mudancas, RegDados *registro);
+
+// compara os campos marcados nas flagos do filtro com um registro de dados
+bool filtrar_registro(Filtro *filtro, RegDados *registro);

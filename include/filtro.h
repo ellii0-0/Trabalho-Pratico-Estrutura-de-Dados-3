@@ -3,8 +3,6 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-#include "registros.h"
-
 // flags de busca, cada bit representa um campo de comparação
 typedef enum FlagsBusca {
         FLAG_VAZIO              = 0,
@@ -23,9 +21,6 @@ typedef struct Filtro {
         int32_t velocidade;
         char unidadeMedida;
 } Filtro;
-
-// compara os campos marcados nas flagos do filtro com um registro de dados
-bool comparar_filtro(Filtro *filtro, RegDados *registro);
 
 // lê os caracteres de entrada no formato especificado:
 // m nomeCampo_1 valorCampo_1 nomeCampo_2 valorCampo_2 ... nomeCampo_m valorCampo_m

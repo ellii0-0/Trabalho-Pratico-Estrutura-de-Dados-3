@@ -178,3 +178,49 @@ void ler_cabecalho(FILE *bin, RegCab *cabecalho)
         fread(&cabecalho->nroRegRem,   sizeof(cabecalho->nroRegRem),   1,      bin);
         fread(&cabecalho->nroPares,    sizeof(cabecalho->nroPares),    1,      bin);
 }
+
+void atualizar_registro(Filtro *mudancas, RegDados *registro)
+{
+        // os campos correspondentes a uma flag são alterados
+
+        FlagsBusca flags = mudancas->flags;
+
+        if (flags & FLAG_IDPOPS)
+                registro->idPoPs = mudancas->idPoPs;
+
+        if (flags & FLAG_IDPOPSCONECTADO)
+                registro->idPoPsConectado = mudancas->idPoPsConectado;
+
+        if (flags & FLAG_VELOCIDADE)
+                registro->velocidade = mudancas->velocidade;
+
+        if (flags & FLAG_UNIDADEMEDIDA)
+                registro->unidadeMedida = mudancas->unidadeMedida; 
+}
+
+bool filtrar_registro(Filtro *filtro, RegDados *registro)
+{
+        // se é encontrada uma flag ativa cujo valor correspondente
+        // é diferente do contido no registro, então retorna falso
+        // do contrário, retorna verdadeiro
+
+        FlagsBusca flags = filtro->flags;
+
+        if (flags & FLAG_IDPOPS
+            && filtro->idPoPs != registro->idPoPs)
+                return false;
+
+        if (flags & FLAG_IDPOPSCONECTADO
+            && filtro->idPoPsConectado != registro->idPoPsConectado)
+                return false;
+
+        if (flags & FLAG_VELOCIDADE
+            && filtro->velocidade != registro->velocidade)
+                return false;
+
+        if (flags & FLAG_UNIDADEMEDIDA
+            && filtro->unidadeMedida != registro->unidadeMedida)
+                return false;
+
+        return true;
+}
