@@ -22,7 +22,7 @@ make run
 ## Limpar
 
 ```bash
-make clear
+make clean
 ```
 
 ## Address Sanitizer
