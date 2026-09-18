@@ -6,16 +6,22 @@
 
 void printa_registro(RegDados *registro)
 {
-        if (registro == NULL)
-                return;
+    if (registro == NULL)
+        return;
 
-        printf(
-                "%d %d %d \"%c\"\n",
-                registro->idPoPs,
-                registro->idPoPsConectado,
-                registro->velocidade,
-                registro->unidadeMedida
-        );
+    printf("%d %d ",
+           registro->idPoPs,
+           registro->idPoPsConectado);
+
+    if (registro->velocidade == NIL_INT)
+        printf("NULO ");
+    else
+        printf("%d ", registro->velocidade);
+
+    if (registro->unidadeMedida == LIXO_STR)
+        printf("NULO\n");
+    else
+        printf("\"%c\"\n", registro->unidadeMedida);
 }
 
 void escrever_registro(FILE *bin, RegDados *registro)
@@ -119,6 +125,8 @@ void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN)
 
         fseek(bin, CAB_TAMANHO + RRN * REG_TAMANHO, SEEK_SET);
         escrever_registro(bin, &registro);
+
+        fflush(bin);
 }
 
 void ler_registro(FILE *bin, RegDados *registro)
@@ -200,6 +208,26 @@ void atualizar_registro(Filtro *mudancas, RegDados *registro)
                 registro->unidadeMedida = mudancas->unidadeMedida; 
 }
 
+FILE *abrir_binario_novo(char *caminho, RegCab *cabecalho)
+{
+        FILE *bin = fopen(caminho, "wb");
+
+        if (bin == NULL)
+                return NULL;
+
+        *cabecalho = (RegCab){
+                .status = CAB_INCONSISTENTE,
+                .topoPilha = NIL_INT,
+                .proxRRN = 0,
+                .nroRegRem = 0,
+                .nroPares = 0
+        };
+
+        escrever_cabecalho(bin, cabecalho);
+
+        return bin;
+}
+
 bool filtrar_registro(Filtro *filtro, RegDados *registro)
 {
         // se é encontrada uma flag ativa cujo valor correspondente
@@ -227,47 +255,36 @@ bool filtrar_registro(Filtro *filtro, RegDados *registro)
         return true;
 }
 
-FILE *abrir_binario_novo(char *caminho, RegCab *cabecalho)
-{
-        FILE *bin = fopen(caminho, "wb");
-
-        *cabecalho = (RegCab){
-                .status         = CAB_INCONSISTENTE,
-
-                .topoPilha      = NIL_INT,
-                .proxRRN        = 0,
-                .nroRegRem      = 0,
-                .nroPares       = 0
-        };
-
-        escrever_cabecalho(bin, cabecalho);
-
-        return bin;
-}
-
 FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar)
 {
-        FILE *bin;
-        
-        if (marcar)
-                bin = fopen(caminho, "rb+");
-        else
-                bin = fopen(caminho, "rb");
+        FILE *bin = fopen(caminho, marcar ? "rb+" : "rb");
 
         if (bin == NULL)
                 return NULL;
 
+        *cabecalho = (RegCab){0};
         ler_cabecalho(bin, cabecalho);
 
+        if (ferror(bin) || feof(bin)
+            || cabecalho->status != CAB_CONSISTENTE) {
+                fclose(bin);
+                return NULL;
+        }
+
         if (marcar) {
-                cabecalho->status = CAB_INCONSISTENTE;   // marca o cabeçalho enquanto inconsistente
+                cabecalho->status = CAB_INCONSISTENTE;
+
                 fseek(bin, 0, SEEK_SET);
                 escrever_cabecalho(bin, cabecalho);
+
+                if (fflush(bin) == EOF || ferror(bin)) {
+                        fclose(bin);
+                        return NULL;
+                }
         }
 
         return bin;
 }
-
 int fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar)
 {
         if (marcar) {
@@ -277,5 +294,5 @@ int fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar)
                 escrever_cabecalho(bin, cabecalho);
         }
 
-        fclose(bin);
+        return fclose(bin);
 }

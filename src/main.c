@@ -30,6 +30,7 @@ int main()
                 comando_create(buffer, BUF_LEN);
                 break;
         case 2:
+                comando_ler(indice_func, buffer, BUF_LEN);
                 break;
         case 3:
         case 5:
@@ -37,6 +38,7 @@ int main()
                 comando_busca(indice_func, buffer, BUF_LEN);
                 break;
         case 4:
+                comando_rrn();
                 break;
         case 6:
                 break;

@@ -55,7 +55,6 @@ void comando_busca(int codigo, char *buffer, size_t length)
                         
                 case 6:
                         break;
-
                 case 7:
                         Filtro mudancas;
 
@@ -83,18 +82,25 @@ void comando_busca(int codigo, char *buffer, size_t length)
 
 void loop_printar(FILE *bin, RegCab *cabecalho, Filtro *filtro)
 {
+        bool encontrou = false;
+
         for (int32_t RRN = 0; RRN < cabecalho->proxRRN; RRN++) {
-                RegDados registro;              // lê do disco o registro no RRN
+                RegDados registro;
                 ler_registro(bin, &registro);
 
                 if (registro.removido == REG_REMOVIDO)
-                        // ignora o registro removido
                         continue;
-                else if (filtrar_registro(filtro, &registro))
+
+                if (filtrar_registro(filtro, &registro)) {
                         printa_registro(&registro);
+                        encontrou = true;
+                }
         }
-        
-        printf("\n");
+
+        if (!encontrou)
+                printf("Registro inexistente.\n");
+        else
+                printf("\n");
 }
 
 void loop_remover(FILE *bin, RegCab *cabecalho, Filtro *filtro)
@@ -111,16 +117,27 @@ void loop_remover(FILE *bin, RegCab *cabecalho, Filtro *filtro)
         }
 }
 
-void loop_atualizar(FILE *bin, RegCab *cabecalho, Filtro *filtro, Filtro *mudancas)
+void loop_atualizar(FILE *bin, RegCab *cabecalho,
+                   Filtro *filtro, Filtro *mudancas)
 {
         for (int32_t RRN = 0; RRN < cabecalho->proxRRN; RRN++) {
-                RegDados registro;              // lê do disco o registro no RRN
+                RegDados registro;
                 ler_registro(bin, &registro);
 
                 if (registro.removido == REG_REMOVIDO)
-                        // ignora o registro removido
                         continue;
-                else if (filtrar_registro(filtro, &registro))
+
+                if (filtrar_registro(filtro, &registro)) {
                         atualizar_registro(mudancas, &registro);
+
+                        fseek(
+                                bin,
+                                CAB_TAMANHO + (long)RRN * REG_TAMANHO,
+                                SEEK_SET
+                        );
+
+                        escrever_registro(bin, &registro);
+                        fflush(bin);
+                }
         }
 }

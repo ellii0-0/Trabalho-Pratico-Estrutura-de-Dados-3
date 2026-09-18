@@ -42,8 +42,7 @@ void comando_create(char *buffer, size_t length)
                 // lê uma linha do csv e a escreve no arquivo binário
 
                 RegDados registro;
-                
-                int erro = ler_linha_csv(buffer, &registro);
+                ler_linha_csv(buffer, &registro);
                 escrever_registro(bin, &registro);
 
                 cabecalho.proxRRN++;

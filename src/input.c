@@ -22,6 +22,8 @@ char *fgets_limpo(char *buffer, size_t length, FILE *stream)
 
 char *meu_strdup(char *str)
 {
+        if (str == NULL)
+                return NULL;
         size_t len = strlen(str) + 1;
 
         char *dup = malloc(sizeof(*str) * len);
@@ -47,6 +49,7 @@ char *ler_valor_str(char *buffer, char *dest, size_t dest_length)
         if (buffer == NULL || dest == NULL)
                 return NULL;
 
+        memset(dest, LIXO_STR, dest_length);
         char *p = buffer;
 
         while (*p != '\0' && isspace(*p))       // percorre o buffer até o primeiro caractere

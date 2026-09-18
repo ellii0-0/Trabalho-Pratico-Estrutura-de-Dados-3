@@ -6,10 +6,12 @@
 
 #include "filtro.h"
 
+#include <stdio.h>
+
 // valores nulos e lixo
 
 #define NIL_INT         -1
-#define NIL_STR         ""
+#define NIL_STR "$"
 
 #define LIXO_STR        '$'
 
@@ -33,7 +35,7 @@ typedef struct RegCab {
 typedef struct RegDados {
         char removido;
         int32_t encadeamentoPilha;
-        
+
         int32_t idPoPs;
         int32_t idPoPsConectado;
         int32_t velocidade;

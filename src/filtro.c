@@ -15,8 +15,7 @@ void parse_filtro(Filtro *filtro, char *buffer, size_t length)
                 .velocidade             = NIL_INT
         };
 
-        strncpy(&filtro->unidadeMedida, NIL_STR, 1);
-
+        filtro->unidadeMedida = LIXO_STR;
         char *m_str = strtok(buffer, " ");
         int m = atoi(m_str);
 
