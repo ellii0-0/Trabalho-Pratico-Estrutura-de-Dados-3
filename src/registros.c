@@ -265,8 +265,7 @@ FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar)
         *cabecalho = (RegCab){0};
         ler_cabecalho(bin, cabecalho);
 
-        if (ferror(bin) || feof(bin)
-            || cabecalho->status != CAB_CONSISTENTE) {
+        if (cabecalho->status != CAB_CONSISTENTE) {
                 fclose(bin);
                 return NULL;
         }
