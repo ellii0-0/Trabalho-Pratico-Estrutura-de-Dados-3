@@ -4,7 +4,7 @@
 void comando_create(char *buffer, size_t length);
 
 // funcionalidade 2 da especificação
-void comando_ler(int codigo, char *buffer, int BUF_LEN);
+void comando_listar(int codigo, char *buffer, int BUF_LEN);
 
 //funcionalidade 4 da especificação
 void comando_rrn(void);

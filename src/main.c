@@ -30,7 +30,7 @@ int main()
                 comando_create(buffer, BUF_LEN);
                 break;
         case 2:
-                comando_ler(indice_func, buffer, BUF_LEN);
+                comando_listar(indice_func, buffer, BUF_LEN);
                 break;
         case 3:
         case 5:

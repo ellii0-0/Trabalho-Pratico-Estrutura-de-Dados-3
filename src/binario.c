@@ -63,7 +63,7 @@ void comando_rrn(void)
 
  
 // lê e imprime os registros do arquivo binário 
-void comando_ler(int codigo, char *buffer, int length)
+void comando_listar(int codigo, char *buffer, int length)
 {       
         (void)buffer;
         (void)length;
