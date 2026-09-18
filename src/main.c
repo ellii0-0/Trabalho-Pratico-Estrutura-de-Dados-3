@@ -35,12 +35,11 @@ int main()
         case 3:
         case 5:
         case 7:
+        case 6:
                 comando_busca(indice_func, buffer, BUF_LEN);
                 break;
         case 4:
                 comando_rrn();
-                break;
-        case 6:
                 break;
         default:
                 // saída de erro não-especificada

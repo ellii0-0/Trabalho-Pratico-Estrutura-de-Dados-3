@@ -228,6 +228,45 @@ FILE *abrir_binario_novo(char *caminho, RegCab *cabecalho)
         return bin;
 }
 
+bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro)
+{
+        int32_t RRN;
+
+        if (cabecalho->topoPilha != NIL_INT) {
+                RRN = cabecalho->topoPilha;
+
+                if (fseek(bin, CAB_TAMANHO + RRN * REG_TAMANHO, SEEK_SET) != 0) 
+                                                             // 67 ^  :D
+                        return false;
+
+                RegDados removido;
+                ler_registro(bin, &removido);
+
+                if (ferror(bin))
+
+                cabecalho->topoPilha = removido.encadeamentoPilha;
+                cabecalho->nroRegRem--;
+        } else {
+
+                RRN = cabecalho->proxRRN;
+                cabecalho->proxRRN++;
+        }
+
+        registro->removido = REG_EM_USO;
+        registro->encadeamentoPilha = NIL_INT;
+
+        if (fseek(bin, CAB_TAMANHO + (long)RRN * REG_TAMANHO,
+                  SEEK_SET) != 0)
+                return false;
+
+        escrever_registro(bin, registro);
+
+        if (ferror(bin))
+                return false;
+
+        return fflush(bin) == 0;
+}
+
 bool filtrar_registro(Filtro *filtro, RegDados *registro)
 {
         // se é encontrada uma flag ativa cujo valor correspondente

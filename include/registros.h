@@ -77,6 +77,8 @@ FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar);
 // fechar arquivo binário (escrevendo o cabeçalho)
 int fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar);
 
+//insere registro no binario
+bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro);
 
 // funções de leitura do arquivo binário
 

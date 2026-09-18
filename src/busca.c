@@ -37,9 +37,36 @@ void comando_busca(int codigo, char *buffer, size_t length)
         int n = atoi(n_str);
 
         for (int i = 0; i < n; i++) {
-                Filtro filtro;                          // recebe o i-ésimo filtro da entrada
+                        // recebe o i-ésimo filtro da entrada
 
                 fgets_limpo(buffer, length, stdin);
+                
+        if (codigo == 6) {
+                RegDados registro;
+
+                char *campo = strtok(buffer, " ");
+                registro.idPoPs = ler_valor_inteiro(campo);
+
+                campo = strtok(NULL, " ");
+                registro.idPoPsConectado = ler_valor_inteiro(campo);
+
+                campo = strtok(NULL, " ");
+                registro.velocidade = ler_valor_inteiro(campo);
+
+                campo = strtok(NULL, " ");
+                ler_valor_str(campo, &registro.unidadeMedida, 1);
+
+                if (!inserir_registro(bin, &cabecalho, &registro)) {
+                        fclose(bin);
+                        free(caminho_bin);
+                        printf("Falha no processamento do arquivo.\n");
+                        return;
+                }
+
+                continue;
+        }
+
+                Filtro filtro;  
                 parse_filtro(&filtro, buffer, length);
 
                 // debug_filtro(&filtro);
