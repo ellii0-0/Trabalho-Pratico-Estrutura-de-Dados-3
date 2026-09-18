@@ -37,7 +37,6 @@ void comando_busca(int codigo, char *buffer, size_t length)
         int n = atoi(n_str);
 
         for (int i = 0; i < n; i++) {
-                        // recebe o i-ésimo filtro da entrada
 
                 fgets_limpo(buffer, length, stdin);
                 
@@ -65,6 +64,7 @@ void comando_busca(int codigo, char *buffer, size_t length)
 
                 continue;
         }
+                // recebe o i-ésimo filtro da entrada
 
                 Filtro filtro;  
                 parse_filtro(&filtro, buffer, length);
