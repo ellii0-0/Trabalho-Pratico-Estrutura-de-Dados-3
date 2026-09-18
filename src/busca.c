@@ -164,7 +164,6 @@ void loop_atualizar(FILE *bin, RegCab *cabecalho,
                         );
 
                         escrever_registro(bin, &registro);
-                        fflush(bin);
                 }
         }
 }

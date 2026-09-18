@@ -126,7 +126,6 @@ void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN)
         fseek(bin, CAB_TAMANHO + RRN * REG_TAMANHO, SEEK_SET);
         escrever_registro(bin, &registro);
 
-        fflush(bin);
 }
 
 void ler_registro(FILE *bin, RegDados *registro)
@@ -243,7 +242,6 @@ bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro)
                 ler_registro(bin, &removido);
 
                 if (ferror(bin))
-
                 cabecalho->topoPilha = removido.encadeamentoPilha;
                 cabecalho->nroRegRem--;
         } else {
@@ -261,10 +259,7 @@ bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro)
 
         escrever_registro(bin, registro);
 
-        if (ferror(bin))
-                return false;
-
-        return fflush(bin) == 0;
+        return true;
 }
 
 bool filtrar_registro(Filtro *filtro, RegDados *registro)
@@ -315,10 +310,6 @@ FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar)
                 fseek(bin, 0, SEEK_SET);
                 escrever_cabecalho(bin, cabecalho);
 
-                if (fflush(bin) == EOF || ferror(bin)) {
-                        fclose(bin);
-                        return NULL;
-                }
         }
 
         return bin;
