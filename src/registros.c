@@ -241,7 +241,7 @@ bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro)
                 RegDados removido;
                 ler_registro(bin, &removido);
 
-                if (ferror(bin))
+
                 cabecalho->topoPilha = removido.encadeamentoPilha;
                 cabecalho->nroRegRem--;
         } else {
