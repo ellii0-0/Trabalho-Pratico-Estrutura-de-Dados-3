@@ -71,6 +71,8 @@ void comando_inserir(char *buffer, size_t length)
         int n = atoi(n_str);
 
         for (int i = 0; i < n; i++) {
+                fgets_limpo(buffer, length, stdin);
+
                 RegDados registro;
 
                 char *campo = strtok(buffer, " ");
