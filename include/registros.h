@@ -11,7 +11,7 @@
 // valores nulos e lixo
 
 #define NIL_INT         -1
-#define NIL_STR "$"
+#define NIL_STR         ""
 
 #define LIXO_STR        '$'
 
@@ -68,10 +68,10 @@ void remover_registro(FILE *bin, RegCab *cabecalho, int32_t RRN);
 
 // arquivo binário
 
-// abrir arquivo binário vazio (rb+)
+// abrir arquivo binário vazio (wb)
 FILE *abrir_binario_novo(char *caminho, RegCab *cabecalho);
 
-// abrir arquivo binário (marcando ou não o cabeçalho)
+// abrir arquivo binário (marcando ou não o cabeçalho, rb ou rb+)
 FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar);
 
 // fechar arquivo binário (escrevendo o cabeçalho)
