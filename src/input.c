@@ -20,22 +20,6 @@ char *fgets_limpo(char *buffer, size_t length, FILE *stream)
         return buffer;                                  // retorno padrão do fgets bem-sucedido
 }
 
-char *meu_strdup(char *str)
-{
-        if (str == NULL)
-                return NULL;
-        size_t len = strlen(str) + 1;
-
-        char *dup = malloc(sizeof(*str) * len);
-
-        if (dup == NULL)
-                return NULL;
-
-        strncpy(dup, str, len);
-
-        return dup;
-}
-
 int32_t ler_valor_inteiro(char *buffer)
 {
         if (token_nulo(buffer) || !isdigit(*buffer))    // se o valor for marcado como nulo,
@@ -94,13 +78,13 @@ char *ler_valor_str(char *buffer, char *dest, size_t dest_length)
 
 bool token_nulo(char *token)
 {
-        if (token == NULL)
-                return true;
+        if (token == NULL || *token == '\0')            // se o ponteiro for nulo ou
+                return true;                            // se for vazio, é nulo
 
         char *nulo = "NULO";
 
-        for (size_t i = 0; i < 5; i++) {
-                if (toupper(token[i]) != nulo[i])
+        for (size_t i = 0; i < 5; i++) {                // comparação case-insensitive
+                if (toupper(token[i]) != nulo[i])       // com "NULO"
                         return false;
         }
 

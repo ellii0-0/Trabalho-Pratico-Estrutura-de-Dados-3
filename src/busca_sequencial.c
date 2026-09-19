@@ -39,31 +39,6 @@ void comando_busca(int codigo, char *buffer, size_t length)
         for (int i = 0; i < n; i++) {
 
                 fgets_limpo(buffer, length, stdin);
-                
-        if (codigo == 6) {
-                RegDados registro;
-
-                char *campo = strtok(buffer, " ");
-                registro.idPoPs = ler_valor_inteiro(campo);
-
-                campo = strtok(NULL, " ");
-                registro.idPoPsConectado = ler_valor_inteiro(campo);
-
-                campo = strtok(NULL, " ");
-                registro.velocidade = ler_valor_inteiro(campo);
-
-                campo = strtok(NULL, " ");
-                ler_valor_str(campo, &registro.unidadeMedida, 1);
-
-                if (!inserir_registro(bin, &cabecalho, &registro)) {
-                        fclose(bin);
-                        free(caminho_bin);
-                        printf("Falha no processamento do arquivo.\n");
-                        return;
-                }
-
-                continue;
-        }
                 // recebe o i-ésimo filtro da entrada
 
                 Filtro filtro;  
@@ -80,8 +55,6 @@ void comando_busca(int codigo, char *buffer, size_t length)
                         loop_remover(bin, &cabecalho, &filtro);
                         break;
                         
-                case 6:
-                        break;
                 case 7:
                         Filtro mudancas;
 
@@ -112,6 +85,9 @@ void loop_printar(FILE *bin, RegCab *cabecalho, Filtro *filtro)
         bool encontrou = false;
 
         for (int32_t RRN = 0; RRN < cabecalho->proxRRN; RRN++) {
+                // percorre sequencialmente o arquivo e
+                // printa os registros filtrados
+
                 RegDados registro;
                 ler_registro(bin, &registro);
 
@@ -133,7 +109,10 @@ void loop_printar(FILE *bin, RegCab *cabecalho, Filtro *filtro)
 void loop_remover(FILE *bin, RegCab *cabecalho, Filtro *filtro)
 {
         for (int32_t RRN = 0; RRN < cabecalho->proxRRN; RRN++) {
-                RegDados registro;              // lê do disco o registro no RRN
+                // percorre sequencialmente o arquivo e
+                // remove os registros filtrados
+
+                RegDados registro;
                 ler_registro(bin, &registro);
 
                 if (registro.removido == REG_REMOVIDO)
@@ -144,10 +123,12 @@ void loop_remover(FILE *bin, RegCab *cabecalho, Filtro *filtro)
         }
 }
 
-void loop_atualizar(FILE *bin, RegCab *cabecalho,
-                   Filtro *filtro, Filtro *mudancas)
+void loop_atualizar(FILE *bin, RegCab *cabecalho, Filtro *filtro, Filtro *mudancas)
 {
         for (int32_t RRN = 0; RRN < cabecalho->proxRRN; RRN++) {
+                // percorre sequencialmente o arquivo e
+                // atualiza os registros correspondentes
+
                 RegDados registro;
                 ler_registro(bin, &registro);
 

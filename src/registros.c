@@ -6,22 +6,22 @@
 
 void printa_registro(RegDados *registro)
 {
-    if (registro == NULL)
-        return;
+        if (registro == NULL)
+                return;
 
-    printf("%d %d ",
-           registro->idPoPs,
-           registro->idPoPsConectado);
+        printf("%d %d ",
+                registro->idPoPs,
+                registro->idPoPsConectado);
 
-    if (registro->velocidade == NIL_INT)
-        printf("NULO ");
-    else
-        printf("%d ", registro->velocidade);
+        if (registro->velocidade == NIL_INT)
+                printf("NULO ");
+        else
+                printf("%d ", registro->velocidade);
 
-    if (registro->unidadeMedida == LIXO_STR)
-        printf("NULO\n");
-    else
-        printf("\"%c\"\n", registro->unidadeMedida);
+        if (strcmp(&registro->unidadeMedida, NIL_STR) == 0)
+                printf("NULO\n");
+        else
+                printf("\"%c\"\n", registro->unidadeMedida);
 }
 
 void escrever_registro(FILE *bin, RegDados *registro)
@@ -214,6 +214,8 @@ FILE *abrir_binario_novo(char *caminho, RegCab *cabecalho)
         if (bin == NULL)
                 return NULL;
 
+        // cabeçalho de um arquivo binário vazio
+
         *cabecalho = (RegCab){
                 .status = CAB_INCONSISTENTE,
                 .topoPilha = NIL_INT,
@@ -232,12 +234,12 @@ bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro)
         int32_t RRN;
 
         if (cabecalho->topoPilha != NIL_INT) {
+                // se a pilha está vazia, insere no proxRRN
+
                 RRN = cabecalho->topoPilha;
 
-                if (fseek(bin, CAB_TAMANHO + RRN * REG_TAMANHO, SEEK_SET) != 0) 
-                                                             // 67 ^  :D
-                        return false;
-
+                fseek(bin, CAB_TAMANHO + RRN * REG_TAMANHO, SEEK_SET); 
+                                                        // 67 ^  :D
                 RegDados removido;
                 ler_registro(bin, &removido);
 
@@ -245,6 +247,7 @@ bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro)
                 cabecalho->topoPilha = removido.encadeamentoPilha;
                 cabecalho->nroRegRem--;
         } else {
+                // senão, desempilha
 
                 RRN = cabecalho->proxRRN;
                 cabecalho->proxRRN++;
@@ -253,10 +256,9 @@ bool inserir_registro(FILE *bin, RegCab *cabecalho, RegDados *registro)
         registro->removido = REG_EM_USO;
         registro->encadeamentoPilha = NIL_INT;
 
-        if (fseek(bin, CAB_TAMANHO + (long)RRN * REG_TAMANHO,
-                  SEEK_SET) != 0)
-                return false;
+        // busca facilitada por RRN
 
+        fseek(bin, CAB_TAMANHO + RRN * REG_TAMANHO, SEEK_SET);
         escrever_registro(bin, registro);
 
         return true;
@@ -291,15 +293,23 @@ bool filtrar_registro(Filtro *filtro, RegDados *registro)
 
 FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar)
 {
-        FILE *bin = fopen(caminho, marcar ? "rb+" : "rb");
+        FILE *bin;
+
+        // apenas utiliza rb+ se necessário
+
+        if (marcar)
+                bin = fopen(caminho, "rb+");
+        else
+                bin = fopen(caminho, "rb");
 
         if (bin == NULL)
                 return NULL;
 
-        *cabecalho = (RegCab){0};
         ler_cabecalho(bin, cabecalho);
 
-        if (cabecalho->status != CAB_CONSISTENTE) {
+        if (cabecalho->status == CAB_INCONSISTENTE) {
+                // ignora o cabeçalho inconsistente
+
                 fclose(bin);
                 return NULL;
         }
@@ -317,6 +327,8 @@ FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar)
 int fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar)
 {
         if (marcar) {
+                // escreve de volta o cabeçalho consistente
+
                 cabecalho->status = CAB_CONSISTENTE;
 
                 fseek(bin, 0, SEEK_SET);

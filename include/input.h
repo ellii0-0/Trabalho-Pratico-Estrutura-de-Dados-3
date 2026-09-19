@@ -8,10 +8,6 @@
 // chama fgets num arquivo de texto e elimina caracteres como \r e \n
 char *fgets_limpo(char *buffer, size_t length, FILE *stream);
 
-// implementação da função não-padronizada "strdup()" que duplica uma string
-// EXIGE QUE SE CHAME free() APÓS USO
-char *meu_strdup(char *str);
-
 // lê um valor inteiro passado para o filtro e retorna
 // checa para o valor NULO (-1)
 int32_t ler_valor_inteiro(char *buffer);
