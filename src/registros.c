@@ -324,7 +324,8 @@ FILE *abrir_binario(char *caminho, RegCab *cabecalho, bool marcar)
 
         return bin;
 }
-int fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar)
+
+void fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar)
 {
         if (marcar) {
                 // escreve de volta o cabeçalho consistente
