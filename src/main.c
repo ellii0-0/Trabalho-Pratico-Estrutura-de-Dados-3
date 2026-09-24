@@ -14,6 +14,7 @@
 int main()
 {
         // recebe o comando
+        //
 
         char buffer[BUF_LEN];
         fgets_limpo(buffer, BUF_LEN, stdin);
