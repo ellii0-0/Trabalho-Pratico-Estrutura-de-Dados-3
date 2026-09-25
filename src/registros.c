@@ -336,5 +336,5 @@ void fechar_binario(FILE *bin, RegCab *cabecalho, bool marcar)
                 escrever_cabecalho(bin, cabecalho);
         }
 
-        return fclose(bin);
+        fclose(bin);
 }
